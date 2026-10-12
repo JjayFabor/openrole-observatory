@@ -27,6 +27,7 @@ def production_settings(**overrides: object) -> Settings:
             "app_env": "production",
             "database_url": DATABASE,
             "object_storage_backend": "r2",
+            "admin_api_token": "synthetic-administrative-token-32-characters",
             **R2_SETTINGS,
             **overrides,
         }
@@ -106,6 +107,7 @@ def test_production_r2_rejects_missing_required_fields(field: str) -> None:
                 "app_env": "production",
                 "database_url": DATABASE,
                 "object_storage_backend": "r2",
+                "admin_api_token": "synthetic-administrative-token-32-characters",
                 **data,
             }
         )
@@ -204,6 +206,9 @@ def test_production_rules_apply_to_environment_and_dotenv_inputs(
     with pytest.raises(ValidationError, match="LOCAL_STORAGE_PATH"):
         Settings(_env_file=dotenv)
     monkeypatch.setenv("LOCAL_STORAGE_PATH", str(tmp_path / "persistent-raw"))
+    monkeypatch.setenv(
+        "ADMIN_API_TOKEN", "synthetic-administrative-token-32-characters"
+    )
     assert Settings(_env_file=dotenv).local_storage_path == tmp_path / "persistent-raw"
 
 

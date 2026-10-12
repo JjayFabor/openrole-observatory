@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     app_env: Literal["development", "test", "production"] = "development"
     log_level: str = "INFO"
     database_url: str = Field(repr=False)
+    admin_api_token: SecretStr | None = Field(default=None, repr=False)
     object_storage_backend: Literal["filesystem", "r2"] = "filesystem"
     local_storage_path: Path = Path(".local-data")
     r2_endpoint_url: str | None = None
@@ -65,6 +66,13 @@ class Settings(BaseSettings):
                 )
         else:
             self._validate_production_r2()
+        token = (
+            self.admin_api_token.get_secret_value() if self.admin_api_token else None
+        )
+        if _is_placeholder(token) or len(token or "") < 32:
+            raise ValueError(
+                "Production requires ADMIN_API_TOKEN of at least 32 characters."
+            )
         return self
 
     def _validate_production_database(self) -> None:

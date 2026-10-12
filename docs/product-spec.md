@@ -45,6 +45,17 @@ SLA. No other provider, public write endpoint or background queue is added.
 See [source-automation.md](source-automation.md) and
 [ADR 0003](adrs/0003-greenhouse-source-automation.md). Phase scope below is historical.
 
+## Deployment preparation increment
+
+The selected topology is Render API/cron and Vercel frontend. The single operator
+uses dashboard HTTP Basic credentials; server-side administrative API calls use a
+separate bearer token. Production administrative access fails closed when
+credentials are missing. Public listing reads remain unauthenticated. This adds
+no user accounts or changes to ingestion/lifecycle behavior. Earlier phase scope
+and completion reports below remain historical. See
+[ADR 0004](adrs/0004-render-vercel-administrative-access.md) and the
+[deployment guide](deployment-render-vercel.md). Actual hosted verification is pending.
+
 ## Phase 1 product scope
 
 Phase 1 supports one configured public Greenhouse source at a time through a

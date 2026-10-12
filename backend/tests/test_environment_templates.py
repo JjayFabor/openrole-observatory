@@ -19,7 +19,7 @@ def test_production_backend_template_contains_blank_secrets_and_explicit_storage
     assert values["OBJECT_STORAGE_BACKEND"] == "r2"
     for name in [
         "DATABASE_URL",
-        "POSTGRES_PASSWORD",
+        "ADMIN_API_TOKEN",
         "R2_ENDPOINT_URL",
         "R2_ACCESS_KEY_ID",
         "R2_SECRET_ACCESS_KEY",

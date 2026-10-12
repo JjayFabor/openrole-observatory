@@ -118,61 +118,25 @@ Unexpected individual sync failures are visible as `AUTOMATION_SYNC_FAILED`.
 
 ## Deploy the schedule
 
-The local installer targets user systemd, not a remote server. For the single
-Ubuntu server described in the Word deployment guide, create these host units
-as administrator **after** backend deployment. Paths below match that guide.
-The `openrole` service account must be able to read `/opt/openrole/.env`, reach
-PostgreSQL and write the configured persistent raw-storage directory. Do not
-install both a host and a user timer for the same deployment.
+Production uses the Render Cron Job in `render.yaml`, with the same production
+PostgreSQL database and private R2 bucket as the API. Create it after API migrations
+and readiness pass. The UTC schedule `0 4,10,16,22 * * *` matches the local
+00:00/06:00/12:00/18:00 Asia/Manila calendar. It runs
+`uv run --no-sync python -m app.cli.automate_greenhouse` from `backend`.
 
-`/etc/systemd/system/openrole-greenhouse-automation.service`:
+Render cron cannot access persistent disks. Do not use the local filesystem
+storage backend or the systemd installer for this production topology. The local
+timer remains available for local development. See the
+[Render/Vercel deployment guide](deployment-render-vercel.md) and
+[Word guide](OpenRole-Deployment-Guide.docx) for ordered setup and environment values.
 
-```ini
-[Unit]
-Description=Discover and synchronize OpenRole Greenhouse sources
-Wants=network-online.target
-After=network-online.target
+Suspend future cron scheduling and wait for an active cycle to finish before
+migrations or source/build replacement. Render's manual Trigger Run cancels an
+active invocation, so trigger only when idle. Scheduled runs wait for an existing
+invocation. Preserve PostgreSQL and Bronze objects independently of releases.
+See [Render cron documentation](https://render.com/docs/cronjobs).
 
-[Service]
-Type=oneshot
-User=openrole
-Group=openrole
-WorkingDirectory=/opt/openrole/backend
-ExecStart=/opt/openrole/backend/.venv/bin/python -m app.cli.automate_greenhouse
-TimeoutStartSec=0
-UMask=0077
-```
-
-`/etc/systemd/system/openrole-greenhouse-automation.timer`:
-
-```ini
-[Unit]
-Description=Check OpenRole Greenhouse sources every six hours
-
-[Timer]
-OnCalendar=*-*-* 00,06,12,18:00:00 Asia/Manila
-Persistent=true
-Unit=openrole-greenhouse-automation.service
-
-[Install]
-WantedBy=timers.target
-```
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable --now openrole-greenhouse-automation.timer
-sudo systemctl start --no-block openrole-greenhouse-automation.service
-sudo systemctl list-timers openrole-greenhouse-automation.timer
-sudo journalctl -u openrole-greenhouse-automation.service -n 120 --no-pager
-```
-
-Stop the timer and wait for the active service to finish **before** database
-backups, migrations, dependency changes or source/build replacement. Then resume
-the timer after verification. Do not kill an active cycle for a routine update;
-an interrupted run may need operator investigation. Raw evidence and PostgreSQL
-volumes must persist independently of application releases.
-
-To stop future local cycles (a running cycle continues):
+To stop future **local** cycles (a running cycle continues):
 
 ```bash
 systemctl --user disable --now openrole-greenhouse-automation.timer

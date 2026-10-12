@@ -1,0 +1,82 @@
+# Review service plans/region before provisioning. Secrets are entered privately.
+envVarGroups:
+  - name: openrole-runtime
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: OBJECT_STORAGE_BACKEND
+        value: r2
+      - key: R2_REGION
+        value: auto
+      - key: JOB_ABSENCE_CONFIRMATION_RUNS
+        value: "2"
+      - key: UV_VERSION
+        value: "0.12.23"
+
+services:
+  - type: web
+    name: openrole-api
+    runtime: python
+    rootDir: backend
+    plan: 0.5c-512mb
+    autoDeployTrigger: "off"
+    buildCommand: uv sync --frozen --no-dev
+    preDeployCommand: uv run --no-sync alembic upgrade head
+    startCommand: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /ready
+    envVars:
+      - fromGroup: openrole-runtime
+      - key: DATABASE_URL
+        sync: false
+      - key: R2_ENDPOINT_URL
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET_NAME
+        sync: false
+      - key: ADMIN_API_TOKEN
+        generateValue: true
+
+  - type: cron
+    name: openrole-greenhouse-sync
+    runtime: python
+    rootDir: backend
+    plan: 0.5c-512mb
+    autoDeployTrigger: "off"
+    schedule: "0 4,10,16,22 * * *"
+    buildCommand: uv sync --frozen --no-dev
+    startCommand: uv run --no-sync python -m app.cli.automate_greenhouse
+    envVars:
+      - fromGroup: openrole-runtime
+      - key: DATABASE_URL
+        fromService:
+          type: web
+          name: openrole-api
+          envVarKey: DATABASE_URL
+      - key: R2_ENDPOINT_URL
+        fromService:
+          type: web
+          name: openrole-api
+          envVarKey: R2_ENDPOINT_URL
+      - key: R2_ACCESS_KEY_ID
+        fromService:
+          type: web
+          name: openrole-api
+          envVarKey: R2_ACCESS_KEY_ID
+      - key: R2_SECRET_ACCESS_KEY
+        fromService:
+          type: web
+          name: openrole-api
+          envVarKey: R2_SECRET_ACCESS_KEY
+      - key: R2_BUCKET_NAME
+        fromService:
+          type: web
+          name: openrole-api
+          envVarKey: R2_BUCKET_NAME
+      - key: ADMIN_API_TOKEN
+        fromService:
+          type: web
+          name: openrole-api
+          envVarKey: ADMIN_API_TOKEN

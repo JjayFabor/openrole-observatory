@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { requireDashboardAccess } from "@/lib/dashboard/access";
 import { ApiError } from "@/lib/api/client";
 import { syncSource } from "@/lib/api/source-sync";
 import type { SourceSyncOutcome } from "@/lib/api/types";
@@ -10,6 +11,7 @@ import { getSourceSyncErrorOutcome } from "@/lib/sources/sync-presentation";
 export async function synchronizeSource(
   sourceId: string,
 ): Promise<SourceSyncOutcome> {
+  await requireDashboardAccess();
   let outcome: SourceSyncOutcome;
   try {
     outcome = { state: "result", result: await syncSource(sourceId) };

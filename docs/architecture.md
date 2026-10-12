@@ -95,8 +95,10 @@ public/internal separation, sanitization, pagination, SEO, accessibility and
 runtime failures without changing schema or pipeline behavior. See
 [the Phase 4 completion report](phase-4-completion.md). Public reads currently
 use deliberate uncached server requests at the small deployment scale; this
-does not provide real-time source monitoring. Dashboard and administrative API
-access still require external protection before public deployment.
+does not provide real-time source monitoring. The later Render/Vercel deployment
+increment implements dashboard Basic authentication and a separate administrative API bearer guard; see
+[ADR 0004](adrs/0004-render-vercel-administrative-access.md). Hosted enforcement
+and production infrastructure still require verification before launch.
 
 The application must preserve the distinction between:
 

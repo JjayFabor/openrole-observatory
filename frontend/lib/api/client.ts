@@ -1,4 +1,5 @@
 import "server-only";
+import { checkDashboardAccess, requireDashboardAccess } from "../dashboard/access";
 
 export class ApiError extends Error {
   constructor(
@@ -92,6 +93,18 @@ export class ApiClient {
   ): Promise<{ status: number; body: unknown }> {
     if (!this.baseUrl) throw new ApiError(0, "INVALID_CONFIGURATION");
     const url = buildApiUrl(this.baseUrl, path);
+    const endpoint = new URL(path, "https://openrole.invalid").pathname;
+    const administrative =
+      endpoint.startsWith("/api/v1/") && !endpoint.startsWith("/api/v1/public/");
+    const requestHeaders: Record<string, string> = {};
+    if (administrative) {
+      if (checkDashboardAccess(null) !== "allowed") await requireDashboardAccess();
+      const token = process.env.OPENROLE_ADMIN_API_TOKEN;
+      if (process.env.NODE_ENV === "production" && (!token || token.length < 32)) {
+        throw new ApiError(0, "INVALID_CONFIGURATION");
+      }
+      if (token) requestHeaders.Authorization = `Bearer ${token}`;
+    }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -100,6 +113,7 @@ export class ApiClient {
         method,
         cache: "no-store",
         signal: controller.signal,
+        headers: requestHeaders,
       });
       let body: unknown;
       try {

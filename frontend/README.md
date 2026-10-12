@@ -425,3 +425,24 @@ The quarantine and source component safety tests render actual components in a s
 ESLint 9.39.5 is pinned because the plugins bundled with the current Next.js ESLint configuration declare support through ESLint 9. Installation reports its upstream deprecation; ESLint 10 should be adopted when those plugins support it. `pnpm-workspace.yaml` allows only the esbuild and unrs-resolver dependency build scripts needed by the toolchain.
 
 This foundation has no authentication. Keep it local or behind existing external access controls when deploying internally.
+
+## Render/Vercel deployment preparation
+
+Import this repository into Vercel with root directory `frontend` and Node.js
+22.x. `vercel.json` uses Corepack and the pinned pnpm version with a frozen
+lockfile; set `ENABLE_EXPERIMENTAL_COREPACK=1` for builds. Supply production
+variables using `.env.production.example` as a checklist; use the Render API's
+HTTPS origin, not localhost. Backend database/R2 secrets remain on Render.
+
+Production `/dashboard/*` is protected by an HTTP Basic username/password prompt.
+The layout, administrative API client and manual sync Server Action independently
+check authorization. `OPENROLE_ADMIN_API_TOKEN` matches Render's separate bearer
+token and stays server-only. Missing dashboard credentials block access in
+production; local development without configured credentials remains accessible.
+Public routes remain public and noindex until the canonical site origin is set.
+
+Source Detail requests a 300-second platform function duration for manual sync;
+verify your compute settings permit it. Timed-out ingestion may still be running
+on Render; inspect persisted runs before retrying. See the complete
+[deployment guide](../docs/deployment-render-vercel.md) and
+[ADR 0004](../docs/adrs/0004-render-vercel-administrative-access.md).

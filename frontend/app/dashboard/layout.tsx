@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { requireDashboardAccess } from "@/lib/dashboard/access";
 
 export const metadata: Metadata = {
   title: { absolute: "OpenRole Observatory", template: "%s · OpenRole" },
@@ -8,11 +9,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await requireDashboardAccess();
   return (
     <div className="min-h-screen">
       <a

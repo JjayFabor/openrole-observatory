@@ -28,12 +28,16 @@ Future providers may include:
 
 ## Current Status
 
-Deployment-blocker Task 1 adds production-only configuration validation and safe
-backend/frontend environment templates. Production cannot implicitly use the
-development storage default or known development database credentials. See
-[production configuration](docs/production-configuration.md) for exact rules and
-loading paths. Host, proxy protection and infrastructure verification remain
-pending; this is not a public deployment approval.
+Deployment preparation targets **Render for FastAPI and cron** and **Vercel for
+Next.js**, backed by production PostgreSQL and private R2. Task 1 validates
+production configuration; Task 2 adds deployment templates and a single-operator
+access boundary: dashboard Basic authentication and separate administrative API
+bearer credentials. Public job reads remain public. See the
+[Render/Vercel deployment guide](docs/deployment-render-vercel.md),
+[production configuration](docs/production-configuration.md) and
+[ADR 0004](docs/adrs/0004-render-vercel-administrative-access.md).
+Actual provisioning, DB/R2 verification, backup/restore and the hosted release
+gate remain pending; this is not a completed public deployment.
 
 After Phase 4, the requested Greenhouse automation increment adds automatic
 board discovery and an external six-hour synchronization timer. The catalogue
@@ -98,7 +102,8 @@ markup is deferred until required employer facts are available. Task 49 closes
 Phase 4 with passing integration/security/accessibility verification; see
 [the Phase 4 completion report](docs/phase-4-completion.md) for evidence and limits.
 Developer understanding review remains pending, and public deployment still
-requires a configured site origin and enforced dashboard/admin protection.
+requires hosted infrastructure/access verification and a configured site origin
+for indexing. The deployment increment implements the administrative guards.
 The static landing works without FastAPI; discovery/detail need it. See
 [frontend setup and routes](frontend/README.md#public-shell-and-landing--task-44).
 

@@ -1,8 +1,9 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
+from app.api.access import require_admin_access
 from app.api.health import router as health_router
 from app.api.jobs import router as jobs_router
 from app.api.pipeline_runs import router as pipeline_runs_router
@@ -49,14 +50,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         title="OpenRole Observatory",
         version="0.1.0",
         lifespan=lifespan,
+        docs_url=None if application_settings.app_env == "production" else "/docs",
+        redoc_url=None if application_settings.app_env == "production" else "/redoc",
+        openapi_url=(
+            None if application_settings.app_env == "production" else "/openapi.json"
+        ),
     )
+    application.state.settings = application_settings
+    admin_dependencies = [Depends(require_admin_access)]
     application.include_router(health_router)
-    application.include_router(source_sync_router)
-    application.include_router(pipeline_runs_router)
-    application.include_router(jobs_router)
+    application.include_router(source_sync_router, dependencies=admin_dependencies)
+    application.include_router(pipeline_runs_router, dependencies=admin_dependencies)
+    application.include_router(jobs_router, dependencies=admin_dependencies)
     application.include_router(public_jobs_router)
-    application.include_router(sources_router)
-    application.include_router(quarantine_router)
+    application.include_router(sources_router, dependencies=admin_dependencies)
+    application.include_router(quarantine_router, dependencies=admin_dependencies)
     return application
 
 
