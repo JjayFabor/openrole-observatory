@@ -1,0 +1,26 @@
+{
+  "jobs": [
+    {
+      "id": 3001,
+      "title": "Technical Writer",
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/3001"
+    },
+    {
+      "id": 3002,
+      "internal_job_id": null,
+      "title": "Community Manager",
+      "updated_at": null,
+      "requisition_id": null,
+      "location": null,
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/3002",
+      "language": null,
+      "metadata": null,
+      "content": null,
+      "departments": null,
+      "offices": null
+    }
+  ],
+  "meta": {
+    "total": 2
+  }
+}

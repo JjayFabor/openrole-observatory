@@ -1,0 +1,130 @@
+{
+  "jobs": [
+    {
+      "id": 1001,
+      "internal_job_id": 5001,
+      "title": "Backend Engineer",
+      "updated_at": "2026-10-01T10:00:00Z",
+      "requisition_id": "ENG-101",
+      "location": {
+        "name": "Berlin, Germany"
+      },
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/1001",
+      "language": "en",
+      "metadata": [
+        {
+          "id": 9001,
+          "name": "Employment Type",
+          "value_type": "single_select",
+          "value": "Full-time"
+        }
+      ],
+      "content": "<p>Build reliable backend services for fictional products.</p>",
+      "departments": [
+        {
+          "id": 7001,
+          "name": "Engineering",
+          "parent_id": null,
+          "child_ids": []
+        }
+      ],
+      "offices": [
+        {
+          "id": 8001,
+          "name": "Berlin",
+          "location": "Berlin, Germany",
+          "parent_id": null,
+          "child_ids": []
+        }
+      ]
+    },
+    {
+      "id": 1002,
+      "internal_job_id": 5002,
+      "title": "Data Engineer",
+      "updated_at": "2026-10-01T12:30:00+02:00",
+      "requisition_id": "DATA-201",
+      "location": {
+        "name": "Remote — Europe"
+      },
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/1002",
+      "language": "en",
+      "metadata": null,
+      "content": "<p>Build dependable pipelines and data products.</p>",
+      "departments": [
+        {
+          "id": 7002,
+          "name": "Data",
+          "parent_id": 7001,
+          "child_ids": []
+        }
+      ],
+      "offices": []
+    },
+    {
+      "id": 1003,
+      "internal_job_id": 5003,
+      "title": "Product Designer",
+      "updated_at": "2026-10-02T09:15:00Z",
+      "requisition_id": null,
+      "location": {
+        "name": "London, United Kingdom"
+      },
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/1003",
+      "language": "en",
+      "metadata": [],
+      "content": "<p>Design clear workflows for complex products.</p>",
+      "departments": [
+        {
+          "id": 7003,
+          "name": "Product",
+          "parent_id": null,
+          "child_ids": []
+        }
+      ],
+      "offices": [
+        {
+          "id": 8002,
+          "name": "London",
+          "location": "London, United Kingdom",
+          "parent_id": null,
+          "child_ids": []
+        }
+      ]
+    },
+    {
+      "id": 1004,
+      "internal_job_id": 5004,
+      "title": "Customer Success Manager",
+      "updated_at": "2026-10-02T11:00:00Z",
+      "location": {
+        "name": "Toronto, Canada"
+      },
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/1004",
+      "language": "en",
+      "metadata": null,
+      "content": "<p>Help fictional customers achieve measurable outcomes.</p>",
+      "departments": [
+        {
+          "id": 7004,
+          "name": "Customer Success",
+          "parent_id": null,
+          "child_ids": []
+        }
+      ],
+      "offices": [
+        {
+          "id": 8003,
+          "name": "Toronto",
+          "location": "Toronto, Canada",
+          "parent_id": null,
+          "child_ids": []
+        }
+      ],
+      "future_greenhouse_field": "ignored without breaking validation"
+    }
+  ],
+  "meta": {
+    "total": 4
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "jobs": [
+    {
+      "id": 2001,
+      "title": "Platform Engineer",
+      "updated_at": "2026-10-03T08:00:00Z",
+      "location": {
+        "name": "Remote"
+      },
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/2001",
+      "content": "<p>Build a reliable platform.</p>"
+    },
+    {
+      "title": "Job Missing Its Greenhouse ID",
+      "updated_at": "2026-10-03T09:00:00Z",
+      "location": {
+        "name": "Paris, France"
+      },
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/missing-id",
+      "content": "<p>This record is intentionally malformed.</p>"
+    },
+    {
+      "id": 2003,
+      "title": "Security Engineer",
+      "updated_at": "2026-10-03T10:00:00Z",
+      "location": {
+        "name": "Amsterdam, Netherlands"
+      },
+      "absolute_url": "https://boards.greenhouse.io/openrolefictional/jobs/2003",
+      "content": "<p>Improve product and infrastructure security.</p>"
+    }
+  ],
+  "meta": {
+    "total": 3
+  }
+}

@@ -1,0 +1,1 @@
+"""OpenRole backend application package."""
