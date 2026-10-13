@@ -16,7 +16,7 @@ export default function PublicLayout({
       <main
         id="public-content"
         tabIndex={-1}
-        className="w-full flex-1 px-5 outline-none sm:px-8 lg:px-10"
+        className="w-full flex-1 px-5 outline-none sm:px-8 lg:px-12 xl:px-16 2xl:px-20"
       >
         {children}
       </main>
