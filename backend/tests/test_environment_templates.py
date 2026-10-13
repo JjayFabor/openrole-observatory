@@ -46,6 +46,7 @@ def test_secret_environment_files_are_ignored_but_templates_are_trackable(
         ".aws/credentials",
         ".agents/settings.json",
         ".codex/config.toml",
+        ".neon",
     ]
     templates = [
         ".env.example",

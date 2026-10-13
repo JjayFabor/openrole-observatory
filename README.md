@@ -39,6 +39,12 @@ bearer credentials. Public job reads remain public. See the
 Actual provisioning, DB/R2 verification, backup/restore and the hosted release
 gate remain pending; this is not a completed public deployment.
 
+Neon CLI setup now links this directory to the selected `production` branch of
+project `sweet-boat-68377250` in Singapore. The empty `neon.ts` policy was applied
+successfully without changes or replacing the local database environment. See
+[Neon setup](docs/neon-setup.md). Application tables, production connection
+settings and R2 still require the deployment infrastructure task.
+
 After Phase 4, the requested Greenhouse automation increment adds automatic
 board discovery and an external six-hour synchronization timer. The catalogue
 provides candidates; Greenhouse metadata verifies each new company before

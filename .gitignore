@@ -16,6 +16,7 @@ htmlcov/
 .aws/
 .agents/
 .codex/
+.neon
 *.py[cod]
 node_modules/
 .next/
