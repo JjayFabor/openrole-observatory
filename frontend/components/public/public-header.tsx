@@ -4,7 +4,7 @@ import { BrandLogo } from "@/components/brand-logo";
 export function PublicHeader() {
   return (
     <header className="border-b border-border">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-5 py-5 sm:px-8 lg:px-10">
+      <div className="flex w-full items-center justify-between gap-6 px-5 py-5 sm:px-8 lg:px-10">
         <Link
           href="/"
           className="shrink-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
