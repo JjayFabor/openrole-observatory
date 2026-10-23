@@ -40,7 +40,7 @@ jobs:
       LOG_LEVEL: INFO
       DATABASE_URL: postgresql+asyncpg://openrole:openrole@localhost:5434/openrole
       OBJECT_STORAGE_BACKEND: filesystem
-      LOCAL_STORAGE_PATH: ${{ runner.temp }}/openrole-local-data
+      LOCAL_STORAGE_PATH: /tmp/openrole-local-data
       JOB_ABSENCE_CONFIRMATION_RUNS: "2"
 
     steps:
