@@ -81,7 +81,8 @@ The password needs at least 32 characters; missing, partial or placeholder
 credentials fail closed in production. Never put these values in `NEXT_PUBLIC_*`.
 
 Set `OPENROLE_SITE_URL` to the actual HTTPS origin consistently at build and
-startup. No domain has been selected, so the template leaves it blank. Existing
+startup. Production uses `https://openrole-observatory.jjayfabor.com`; the
+template leaves it blank so local setups opt in deliberately. Existing
 site validation rejects unsafe/non-origin/localhost production URLs; absent or
 invalid configuration disables indexing, canonicals and sitemap advertisement
 while retaining usable public pages. This behavior is unchanged.

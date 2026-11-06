@@ -1,0 +1,35 @@
+# Render's free plan sleeps the API after ~15 idle minutes, and waking it takes longer than
+# the frontend waits. Requesting /health regularly keeps it awake.
+# /health is used instead of /ready on purpose: /ready queries PostgreSQL, which would keep the
+# Neon compute running around the clock.
+name: Keep API warm
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: keep-api-warm
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Request /health
+        env:
+          API_BASE_URL: ${{ vars.OPENROLE_API_BASE_URL }}
+        run: |
+          if [ -z "$API_BASE_URL" ]; then
+            echo "::error::Set the OPENROLE_API_BASE_URL repository variable to the Render API origin."
+            exit 1
+          fi
+          # A sleeping service can take about a minute to answer, so allow up to 90 seconds.
+          curl --fail --silent --show-error --max-time 90 \
+            --retry 2 --retry-delay 10 --retry-all-errors \
+            --output /dev/null --write-out "HTTP %{http_code} in %{time_total}s\n" \
+            "${API_BASE_URL%/}/health"

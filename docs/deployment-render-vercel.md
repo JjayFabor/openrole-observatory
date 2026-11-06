@@ -112,7 +112,7 @@ Enter the following **Production** environment values before deploying:
 | `OPENROLE_ADMIN_API_TOKEN` | The same value as Render's `ADMIN_API_TOKEN` |
 | `OPENROLE_DASHBOARD_USERNAME` | Your single operator username, without `:` |
 | `OPENROLE_DASHBOARD_PASSWORD` | A separate randomly generated password, at least 32 characters |
-| `OPENROLE_SITE_URL` | Leave blank until your actual canonical HTTPS origin is chosen |
+| `OPENROLE_SITE_URL` | `https://openrole-observatory.jjayfabor.com` (the canonical HTTPS origin, no path) |
 | `OPENROLE_DEFAULT_SOURCE_ID` | Optional real source UUID; leave blank initially |
 
 Do not use `localhost` or Render's internal hostname for the Vercel API URL.
@@ -180,9 +180,26 @@ Also verify HTTPS, a production-specific migrated database, readiness failures,
 scheduled execution, backup retention and a tested restore. These are hosted
 checks; local tests and schemas do not establish that they passed.
 
-Set `OPENROLE_SITE_URL` to the final HTTPS public origin when chosen and redeploy.
-Until then, existing public pages remain noindex, with no canonical URLs or
-sitemap advertisement. Do not invent a domain or publish JobPosting claims.
+Set `OPENROLE_SITE_URL` to `https://openrole-observatory.jjayfabor.com` in Vercel
+and redeploy, because it is read at build and at startup. Without it, public pages
+remain noindex, with no canonical URLs or sitemap advertisement. Afterwards,
+`robots.txt` should allow `/` and name the sitemap, and `sitemap.xml` should list
+`/`, `/jobs` and the job detail pages. Do not publish JobPosting claims.
+
+### Keep the free-plan API awake
+
+Render's free plan sleeps the API after about 15 idle minutes, and waking it can
+take longer than the frontend's 15-second read timeout. The scheduled workflow
+`.github/workflows/keep-api-warm.yml` requests `/health` every 10 minutes to
+prevent that. In GitHub, open **Settings → Secrets and variables → Actions →
+Variables** and add the repository variable `OPENROLE_API_BASE_URL` with the
+Render API origin. Then run **Keep API warm** once from the Actions tab and
+confirm it reports HTTP 200.
+
+The workflow requests `/health`, not `/ready`, so it does not keep the Neon
+compute running. GitHub can delay scheduled runs, so an occasional cold start is
+still possible; the frontend then shows its retry message. One free service awake
+all month uses about 730 of Render's 750 free instance hours.
 
 ## 7. Updates and recovery
 
