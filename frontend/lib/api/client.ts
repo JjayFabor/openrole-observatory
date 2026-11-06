@@ -54,6 +54,10 @@ function errorCode(body: unknown): string | undefined {
   return typeof error.code === "string" ? error.code : undefined;
 }
 
+// Long enough for the hosted database to resume from idle. A full Render free-plan cold
+// start takes longer; the keep-api-warm workflow exists to prevent those.
+const DEFAULT_READ_TIMEOUT_MS = 15_000;
+
 type ApiClientOptions = {
   baseUrl?: string;
   fetcher?: typeof fetch;
@@ -70,7 +74,7 @@ export class ApiClient {
   constructor(options: ApiClientOptions = {}) {
     this.baseUrl = options.baseUrl ?? process.env.OPENROLE_API_BASE_URL;
     this.fetcher = options.fetcher ?? fetch;
-    this.timeoutMs = options.timeoutMs ?? 4000;
+    this.timeoutMs = options.timeoutMs ?? DEFAULT_READ_TIMEOUT_MS;
     this.mutationTimeoutMs = options.mutationTimeoutMs ?? 300000;
   }
 

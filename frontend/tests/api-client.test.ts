@@ -144,6 +144,36 @@ test("timeout aborts a pending request", async () => {
   });
 });
 
+test("default read timeout waits 15 seconds so an idle backend can resume", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  let aborted = false;
+  const client = new ApiClient({
+    baseUrl: "http://backend.test",
+    fetcher: async (_input, init) => {
+      return new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener(
+          "abort",
+          () => {
+            aborted = true;
+            reject(new DOMException("Aborted", "AbortError"));
+          },
+          { once: true },
+        );
+      });
+    },
+  });
+  const request = client.getJson("/health");
+  // Let requestJson reach fetch and register its timer before advancing the clock.
+  await new Promise((resolve) => setImmediate(resolve));
+
+  t.mock.timers.tick(14_999);
+  assert.equal(aborted, false);
+
+  t.mock.timers.tick(1);
+  await assert.rejects(request, { name: "ApiError", status: 0, code: "TIMEOUT" });
+  assert.equal(aborted, true);
+});
+
 test("invalid configuration never attempts a network request", async () => {
   const client = new ApiClient({
     baseUrl: "invalid",
