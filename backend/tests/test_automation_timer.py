@@ -54,8 +54,21 @@ def test_installer_preserves_unmanaged_units_before_writing_anything(
     assert (units / SERVICE_NAME).stat().st_mode & 0o777 == 0o600
 
 
+def _systemd_user_manager_available() -> bool:
+    """`systemd-analyze --user verify` needs a running user manager, not just the binary."""
+    if shutil.which("systemd-analyze") is None or shutil.which("systemctl") is None:
+        return False
+    result = subprocess.run(
+        ["systemctl", "--user", "show-environment"],
+        capture_output=True,
+        check=False,
+    )
+    return result.returncode == 0
+
+
 @pytest.mark.skipif(
-    shutil.which("systemd-analyze") is None, reason="systemd is unavailable"
+    not _systemd_user_manager_available(),
+    reason="systemd user manager is unavailable",
 )
 def test_systemd_parses_generated_units_without_starting_them(tmp_path: Path) -> None:
     root = tmp_path / "repo space%"

@@ -66,12 +66,8 @@ jobs:
       - name: Apply migrations
         run: uv run alembic upgrade head
 
-      # The systemd unit test needs a running systemd user session, which CI
-      # runners do not provide. It still runs on developer machines.
       - name: Test
-        run: >-
-          uv run pytest
-          --deselect tests/test_automation_timer.py::test_systemd_parses_generated_units_without_starting_them
+        run: uv run pytest
 
   frontend:
     name: Frontend (lint, types, tests, build)
